@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="File Upload" property="og:title" />
+  <meta content="DM to report a file or issues" property="og:description" />
+  <title>File Upload</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600&display=swap');
+    body {
+      text-align: center;
+      background-color: lightgray;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      background-color: white;
+      border-radius: 5px;
+      font-size: medium;
+    }
+    label {
+      padding: 10px;
+      border: none;
+      background-color: grey;
+      border-radius: 5px;
+      color: white;
+    }
+    input {
+      display: none;
+      z-index: 11;
+    }
+    .footer { 
+      position: absolute; 
+      bottom: 0; 
+      left: 0; 
+      width: 100%;
+      z-index: 10;
+      text-align: center;
+      background-color: grey;
+    }
+    #back {
+      text-align: left;
+      margin-top: 10px;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="window.location.href = '/'" id="back">Go Back</button>
+  <h1>Upload File</h1>
+  <p>Max file size: 20 MB</p>
+  <form action="/uploadfile" method="post" enctype="multipart/form-data" onsubmit="return validateFileSize()">
+    <label for="fileInput">Select File</label>
+    <input type="file" name="file" id="fileInput" required>
+    <br>
+    <br>
+    <button type="submit">Upload File</button>
+  </form>
+  <p id="errorMessage" style="color: red;"></p>
+  <div class="footer">
+    <p>Hosted by Tom1212 on Discord</p>
+    <p>DM to report a file or issues</p>
+  </div>
+  <script>
+    function validateFileSize() {
+      const input = document.getElementById('fileInput');
+      const file = input.files[0];
+      if (file && file.size > 20 * 1024 * 1024) {
+        document.getElementById('errorMessage').innerText = 'File size exceeds the maximum limit (20 MB).';
+        return false;
+      } else {
+        document.getElementById('errorMessage').innerText = '';
+        return true;
+      }
+    }
+  </script>
+</body>
+</html>
