@@ -45,7 +45,7 @@
 </head>
 <body>
   <center>
-  <button onclick="window.location.href = '/uploadvideo'" id="back">Upload video</button> <button onclick="window.location.href = '/uploadimage'" id="info">Upload Image</button> <button onclick="window.location.href = '/info'" id="info">Info</button>
+  <button onclick="window.location.href = '/uploadvideo'" id="back">Upload video</button> <button onclick="window.location.href = '/uploadimage'" id="info">Upload Image</button> <button onclick="window.location.href = '/uploadfile'" id="info">Upload File</button> <button onclick="window.location.href = '/info'" id="info">Info</button>
   </center>
   <br>
   <br>
@@ -59,6 +59,13 @@
   <ul>
     {% for image in images %}
       <li><a href="/image/{{ image.filename }}" target="_blank">{{ image.filename }}</a></li>
+    {% endfor %}
+  </ul>
+  <h1>Uploaded Files:</h1>
+  <p>⚠️ Download files with care! ⚠️</p>
+  <ul>
+    {% for file in files %}
+      <li><a href="/file/{{ file.filename }}" target="_blank">{{ file.filename }}</a></li>
     {% endfor %}
   </ul>
 </body>
