@@ -10,12 +10,14 @@ app = Flask(__name__)
 SERVER_PORT = 8080
 SERVER_IP = 'localhost'
 UPLOAD_FOLDER = 'videos'
+UPLOAD_FILES_FOLDER = 'files' 
 UPLOAD_IMAGE_FOLDER = 'images'
 ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'mov'}
 ALLOWED_IMAGE_EXTENSIONS = {'jpg', 'png'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_IMAGE_FOLDER'] = UPLOAD_IMAGE_FOLDER
+app.config['UPLOAD_FILES_FOLDER'] = UPLOAD_FILES_FOLDER 
 
 def allowed_video_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_VIDEO_EXTENSIONS
@@ -35,6 +37,7 @@ def update_videos_array():
 
     with open('videos.json', 'w') as json_file:
         json.dump(videos, json_file)
+
 # Update images.json function
 def update_image_array():
     images = []
@@ -47,6 +50,19 @@ def update_image_array():
 
     with open('images.json', 'w') as json_file:
         json.dump(images, json_file)
+
+# Update files.json function
+def update_file_array():
+    files = []
+    for file in os.listdir(app.config['UPLOAD_FILES_FOLDER']):
+        file_info = {
+            'filename': file,
+            'path': os.path.join(app.config['UPLOAD_FILES_FOLDER'], file),
+        }
+        files.append(file_info)
+
+    with open('files.json', 'w') as json_file:
+        json.dump(files, json_file)
 
 # Video upload page and saving (Updates videos.json)
 @app.route('/uploadvideo', methods=['GET', 'POST'])
@@ -88,6 +104,33 @@ def upload_image_page():
         return jsonify({'error': 'Invalid file format'})
     return render_template('uploadimage.html')
 
+# File upload page and saving (Updates files.json)
+@app.route('/uploadfile', methods=['GET', 'POST'])
+def upload_file_page():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'})
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file file'})
+        random_string = str(uuid.uuid4())
+        file_name, file_extension = os.path.splitext(file.filename)
+        new_filename = f"{file_name}_{random_string}{file_extension}"
+        filename = os.path.join(app.config['UPLOAD_FILES_FOLDER'], new_filename)
+        file.save(filename)
+        update_file_array()
+        return redirect("/")
+    return render_template('uploadfile.html')
+
+# File list from files.json
+@app.route('/file')
+def get_file():
+    with open('files.json', 'r') as json_file:
+        files = json.load(json_file)
+
+    file_list = ''.join([f"<li><a href='/file/{file['filename']}' target='_blank'>{file['filename']}</a></li>" for file in files])
+    return f"<ul>{file_list}</ul>"
+
 # Video list from videos.json
 @app.route('/videos')
 def get_videos():
@@ -97,7 +140,7 @@ def get_videos():
     video_list = ''.join([f"<li><a href='/video/{video['filename']}' target='_blank'>{video['filename']}</a></li>" for video in videos])
     return f"<ul>{video_list}</ul>"
 
-# Video list from videos.json
+# Image list from images.json
 @app.route('/image')
 def get_image():
     with open('images.json', 'r') as json_file:
@@ -123,8 +166,10 @@ def videos_page():
         videos = json.load(videos_file)
     with open('images.json', 'r') as images_file:
         images = json.load(images_file)
+    with open('files.json', 'r') as files_file:
+        files = json.load(files_file)
 
-    return render_template('videos.html', videos=videos, images=images)
+    return render_template('videos.html', videos=videos, images=images, files=files)
 
 # Info page
 @app.route('/info')
@@ -137,6 +182,9 @@ if __name__ == '__main__':
         os.makedirs(app.config['UPLOAD_FOLDER'])
     elif not os.path.exists(app.config['UPLOAD_IMAGE_FOLDER']):
         os.makedirs(app.config['UPLOAD_IMAGE_FOLDER'])
+    elif not os.path.exists(app.config['UPLOAD_FILES_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FILES_FOLDER'])
     update_videos_array()
     update_image_array()
+    update_file_array()
     app.run(port=SERVER_PORT, host=SERVER_IP)
