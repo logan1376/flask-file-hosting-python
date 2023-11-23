@@ -7,10 +7,10 @@ import json
 app = Flask(__name__)
 
 # Set server port here
-SERVER_PORT = 8080
+SERVER_PORT = 25567
 SERVER_IP = 'localhost'
 UPLOAD_FOLDER = 'videos'
-UPLOAD_FILES_FOLDER = 'file' 
+UPLOAD_FILES_FOLDER = 'files' 
 UPLOAD_IMAGE_FOLDER = 'images'
 ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'mov'}
 ALLOWED_IMAGE_EXTENSIONS = {'jpg', 'png'}
@@ -158,6 +158,11 @@ def serve_video(filename):
 @app.route('/image/<filename>')
 def serve_image(filename):
     return send_file(os.path.join(app.config['UPLOAD_IMAGE_FOLDER'], filename))
+
+# Send file to user
+@app.route('/file/<filename>')
+def serve_file(filename):
+    return send_file(os.path.join(app.config['UPLOAD_FILES_FOLDER'], filename))
 
 # Show lists of files
 @app.route('/')
