@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 # Set server port here
 SERVER_PORT = 8080
-# Note: If ip is numbers remove '' if its letters add ''
 SERVER_IP = 'localhost'
 UPLOAD_FOLDER = 'videos'
 UPLOAD_IMAGE_FOLDER = 'images'
