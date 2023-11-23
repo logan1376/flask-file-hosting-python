@@ -7,7 +7,7 @@ import json
 app = Flask(__name__)
 
 # Set server port here
-SERVER_PORT = 25567
+SERVER_PORT = 8080
 SERVER_IP = 'localhost'
 UPLOAD_FOLDER = 'videos'
 UPLOAD_FILES_FOLDER = 'files' 
