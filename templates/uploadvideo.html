@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="Video Upload" property="og:title" />
+  <meta content="DM to report a video or issues" property="og:description" />
+  <title>Video Upload</title>
+  <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300&display=swap');
+body {
+  text-align: center;
+  background-color: lightgray;
+  font-family: 'Nunito Sans', sans-serif;
+}
+button {
+  padding: 10px;
+  border: none;
+  background-color: white;
+  border-radius: 5px;
+  font-size: medium;
+}
+label {
+  padding: 10px;
+  border: none;
+  background-color: grey;
+  border-radius: 5px;
+  color: white;
+}
+input {
+  display: none;
+  z-index: 11;
+}
+.footer { 
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  width: 100%;
+  z-index: 10;
+  text-align: center;
+  background-color: grey;
+}
+#back {
+  text-align: left;
+  margin-top: 10px;
+  z-index: 1;
+}
+  </style>
+</head>
+<body>
+  <button onclick="window.location.href = '/'" id="back">Go Back</button>
+  <h1>Upload Video</h1>
+  <p>Max file size: 20 MB</p>
+  <form action="/uploadvideo" method="post" enctype="multipart/form-data" onsubmit="return uploadFile()">
+    <label for="videoInput">Select Video</label>
+    <input type="file" accept=".mov, .mp4" name="video" id="videoInput" required>
+    <br>
+    <br>
+    <button type="submit">Upload Video</button>
+  </form>
+  <p id="errorMessage" style="color: red;"></p>
+  <progress id="uploadProgressBar" value="0" max="100"></progress>
+  <div class="footer">
+    <p>Hosted by Tom1212. on discord</p>
+    <p>DM to report a video or issues</p>
+  </div>
+  <script>
+    function uploadFile() {
+      const input = document.getElementById('videoInput');
+      const file = input.files[0];
+
+      if (file && file.size > 20 * 1024 * 1024) {
+        document.getElementById('errorMessage').innerText = 'File size exceeds the maximum limit (20 MB).';
+        return false;
+      }
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.upload.onprogress = function (event) {
+        if (event.lengthComputable) {
+          const progress = (event.loaded / event.total) * 100;
+          document.getElementById('uploadProgressBar').value = progress;
+        }
+      };
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // Successful upload, you can handle the response here
+            console.log(xhr.responseText);
+          } else {
+            // Handle error
+            console.error('Error during file upload');
+          }
+        }
+      };
+
+      const formData = new FormData();
+      formData.append('video', file);
+
+      xhr.open('POST', '/uploadvideo', true);
+      xhr.send(formData);
+
+      return true;
+    }
+  </script>
+</body>
+</html>

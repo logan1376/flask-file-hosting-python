@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="Video Hosty" property="og:title" />
+  <meta content="DM to report a video or issues" property="og:description" />
+  <title>Video Hosting</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300&display=swap');
+    body {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      background-color: lightgray;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+    .footer { 
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%;
+    z-index: 10;
+    text-align: center;
+    background-color: grey;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      background-color: white;
+      border-radius: 5px;
+      font-size: medium;
+    }
+    #back {
+      text-align: left;
+      margin-top: 10px;
+      z-index: 1;
+    }
+    #info {
+      text-align: left;
+      margin-left: 10px;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <center>
+  <button onclick="window.location.href = '/uploadvideo'" id="back">Upload video</button> <button onclick="window.location.href = '/uploadimage'" id="info">Upload Image</button> <button onclick="window.location.href = '/info'" id="info">Info</button>
+  </center>
+  <br>
+  <br>
+  <h1>Uploaded Videos:</h1>
+  <ul>
+    {% for video in videos %}
+      <li><a href="/video/{{ video.filename }}" target="_blank">{{ video.filename }}</a></li>
+    {% endfor %}
+  </ul>
+  <h1>Uploaded Images:</h1>
+  <ul>
+    {% for image in images %}
+      <li><a href="/image/{{ image.filename }}" target="_blank">{{ image.filename }}</a></li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
